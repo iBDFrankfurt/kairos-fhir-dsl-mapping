@@ -1,137 +1,106 @@
 package projects.nngm.v2
 
+import de.kairos.fhir.centraxx.metamodel.Diagnosis
 
-import static de.kairos.fhir.centraxx.metamodel.AbstractEntity.ID
 import static de.kairos.fhir.centraxx.metamodel.RootEntities.diagnosis
 
 /**
  * Represented by a CXX Diagnosis
+ *
  * Specified by https://simplifier.net/oncology/primaerdiagnose
- * @author Mike Wähnert
- * @since CXX.v.3.17.1.6, v.3.17.2
+ * @author Timo Schneider
+ * @since CXX.v.2023.3.2
  */
 condition {
+    // Get a List of all Diagnoses
+    final List<Diagnosis> allDiagnoses = context.source[diagnosis()].findAll()
+    if(allDiagnoses == null || allDiagnoses.isEmpty()) {
+        return
+    }
+    final Diagnosis firstDiagnosis = getFirstDiagnosis(allDiagnoses)
 
-  final String icdCode = context.source[diagnosis().icdEntry().code()]
-  if (!hasRelevantCode(icdCode)) { // diagnosis without C or D code are filtered
-    return
-  }
+    // ID of current processed diagnosis
+    final String diagId = context.source[diagnosis().id()] as String
 
-  id = "Condition/" + context.source[diagnosis().id()]
+    //ID of firstDiagnosis
+    final String firstDiagId = firstDiagnosis.id() as String
 
-  meta {
-    profile "http://dktk.dkfz.de/fhir/StructureDefinition/onco-core-Condition-Primaerdiagnose"
-  }
+    final String icdCode = context.source[firstDiagnosis.icdEntry().code()]
 
-  subject {
-    reference = "Patient/" + context.source[diagnosis().patientContainer().id()]
-  }
+    if (firstDiagId != diagId) { // only process firstDiagnosis
+        return
+    }
 
-  final def diagnosisId = context.source[diagnosis().diagnosisId()]
-  if (diagnosisId) {
-    identifier {
-      value = diagnosisId
-      type {
+    id = "Condition/" + firstDiagId
+
+    meta {
+        source = "urn:centraxx"
+        profile "http://uk-koeln.de/fhir/StructureDefinition/Condition/nNGM/FirstDiagnosis"
+    }
+
+    subject {
+        reference = "Patient/" + context.source[firstDiagnosis.patientContainer().id()]
+    }
+
+    final def diagnosisId = context.source[firstDiagnosis.diagnosisId()]
+    if (diagnosisId) {
+        identifier {
+            value = diagnosisId
+            type {
+                coding {
+                    system = "urn:centraxx"
+                    code = "diagnosisId"
+                }
+            }
+        }
+    }
+
+    final def clinician = context.source[firstDiagnosis.clinician()]
+    if (clinician) {
+        recorder {
+            identifier {
+                display = clinician
+            }
+        }
+    }
+
+    onsetDateTime {
+        date = normalizeDate(context.source[firstDiagnosis.diagnosisDate().date()] as String)
+    }
+
+
+    code {
         coding {
-          system = "urn:centraxx"
-          code = "diagnosisId"
+            system = "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
+            code = icdCode as String
+            version = context.source[firstDiagnosis.icdEntry().catalogue().catalogueVersion()]
         }
-      }
+        text = context.source[firstDiagnosis.icdEntry().preferredLong()] as String
     }
-  }
 
-  final def clinician = context.source[diagnosis().clinician()]
-  if (clinician) {
-    recorder {
-      identifier {
-        display = clinician
-      }
-    }
-  }
-
-  onsetDateTime {
-    date = normalizeDate(context.source[diagnosis().diagnosisDate().date()] as String)
-  }
-
-  final String multipleCodingSymbol = mapUsage(context.source[diagnosis().icdEntry().usage()] as String)
-
-  code {
-    coding {
-      if (multipleCodingSymbol != null) {
-        extension {
-          url = "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen"
-          valueCoding {
-            system = "http://fhir.de/CodeSystem/icd-10-gm-mehrfachcodierungs-kennzeichen"
-            version = "2021"
-            code = multipleCodingSymbol
-          }
+    // ICD-O-3 topography
+    final String catalogName = context.source[firstDiagnosis.icdEntry().catalogue().name()]
+    if (catalogName != null && catalogName.contains("ICD-O-3")) {
+        bodySite {
+            coding {
+                system = "urn:oid:2.16.840.1.113883.6.43.1"
+                code = icdCode as String
+                version = context.source[firstDiagnosis.icdEntry().catalogue().catalogueVersion()]
+            }
+            text = context.source[firstDiagnosis.icdEntry().preferredLong()] as String
         }
-      }
-      system = "http://fhir.de/CodeSystem/bfarm/icd-10-gm"
-      code = icdCode as String
-      version = context.source[diagnosis().icdEntry().catalogue().catalogueVersion()]
     }
-    text = context.source[diagnosis().icdEntry().preferredLong()] as String
-  }
 
-  // ICD-O-3 topography
-  final String catalogName = context.source[diagnosis().icdEntry().catalogue().name()]
-  if (catalogName != null && catalogName.contains("ICD-O-3")) {
-    bodySite {
-      coding {
-        system = "urn:oid:2.16.840.1.113883.6.43.1"
-        code = icdCode as String
-        version = context.source[diagnosis().icdEntry().catalogue().catalogueVersion()]
-      }
-      text = context.source[diagnosis().icdEntry().preferredLong()] as String
+    if (context.source[firstDiagnosis.diagnosisLocalisation()] != null) {
+        bodySite {
+            coding {
+                system = "http://dktk.dkfz.de/fhir/onco/core/CodeSystem/SeitenlokalisationCS"
+                code = context.source[firstDiagnosis.diagnosisLocalisation()] as String
+            }
+        }
     }
-  }
-
-  if (context.source[diagnosis().diagnosisLocalisation()] != null) {
-    bodySite {
-      coding {
-        system = "http://dktk.dkfz.de/fhir/onco/core/CodeSystem/SeitenlokalisationCS"
-        code = context.source[diagnosis().diagnosisLocalisation()] as String
-      }
-    }
-  }
-
-  context.source[diagnosis().samples()]?.each { final sample ->
-    extension {
-      url = "http://dktk.dkfz.de/fhir/StructureDefinition/onco-core-Extension-Specimen"
-      valueReference {
-        reference = "Specimen/" + sample[ID]
-      }
-    }
-  }
 }
 
-static String mapUsage(final String usage) {
-  switch (usage) {
-    case "optional":
-      return "!"
-    case "aster":
-      return "*"
-    case "dagger":
-      return "†"
-    default:
-      return null
-  }
-}
-
-// usage with enum with 1.16.0 kairos-fhir-dsl
-/*static String mapUsage(final IcdEntryUsage usage){
-  switch (usage){
-    case IcdEntryUsage.OPTIONAL :
-      return "!"
-    case IcdEntryUsage.ASTER:
-      return "*"
-    case IcdEntryUsage.DAGGER:
-      return "†"
-    default:
-      return null
-  }
-}*/
 
 /**
  * removes milli seconds and time zone.
@@ -139,9 +108,22 @@ static String mapUsage(final String usage) {
  * @return the result might be something like "1989-01-15T00:00:00"
  */
 static String normalizeDate(final String dateTimeString) {
-  return dateTimeString != null ? dateTimeString.substring(0, 19) : null
+    return dateTimeString != null ? dateTimeString.substring(0, 19) : null
 }
 
-static boolean hasRelevantCode(final String icdCode) {
-  return icdCode != null && (icdCode.toUpperCase().startsWith('C') || icdCode.toUpperCase().startsWith('D'))
+/**
+ * Return the diagnosis with the oldest date, this will return the first diagnosis
+ * @param allDiagnosis List of all Diagnosis
+ * @return firstDiagnosis
+ */
+static Diagnosis getFirstDiagnosis(final List<Diagnosis> allDiagnosis) {
+    Diagnosis firstDiagnosis = null
+
+    allDiagnosis.each { diag ->
+        if (firstDiagnosis == null || diag.diagnosisDate().date() < firstDiagnosis.diagnosisDate().date()) {
+            oldestObject = diag
+        }
+    }
+
+    return firstDiagnosis
 }
