@@ -1,9 +1,6 @@
 package projects.nngm.v2
 
 import groovy.json.JsonSlurper
-import org.slf4j.LoggerFactory
-
-import java.util.concurrent.ConcurrentHashMap
 
 import static de.kairos.fhir.centraxx.metamodel.RootEntities.attendingDoctor
 
@@ -19,82 +16,73 @@ import static de.kairos.fhir.centraxx.metamodel.RootEntities.attendingDoctor
  */
 practitioner {
 
-  id = "Practitioner/" + context.source[attendingDoctor().id()]
+    id = "Practitioner/" + context.source[attendingDoctor().id()]
 
-  meta {
-    profile"http://uk-koeln.de/fhir/StructureDefinition/Practitioner/nNGM"
-  }
+    meta {
+        profile "http://uk-koeln.de/fhir/StructureDefinition/Practitioner/nNGM"
+    }
+    final def practitionerInSystem = matchPractitioner(
+            context.source[attendingDoctor().contact().contactPersonFirstName()].toString(),
+            context.source[attendingDoctor().contact().contactPersonLastName()].toString(),
+            context.source[attendingDoctor().contact().contactPersonTitle()].toString(),
+    )
 
-  // TODO get practitioner by NMS Endpoint: https://nngm-nms.medicalsyn.com/api/v1.0/Public/Person
-  identifier {
-    system = "urn:centraxx"
-    value = context.source[attendingDoctor().contact().syncId()]
-  }
+    if (practitionerInSystem.internalSequenceIdentifier) {
+        identifier {
+            system = "http://uk-koeln.de/fhir/sid/nNGM/nms-person"
+            value = practitionerInSystem.internalSequenceIdentifier
+        }
+    } else {
+        identifier {
+            system = "urn:centraxx"
+            value = normalizeName(practitionerInSystem.title, practitionerInSystem.firstName, practitionerInSystem.lastName)
+        }
+    }
+
 }
 
 class NNGMPractitioner {
-  String internalSequenceIdentifier
-  String title
-  String firstName
-  String lastName
-  List<String> organizationAssignments = []
-}
-
-
-private List<NNGMPractitioner> getPractitionerFromNMS() {
-  // A thread-safe cache with time-based expiration
-  final ConcurrentHashMap<String, Map<String, Object>> cache = new ConcurrentHashMap<>()
-
-  final String httpMethod = "GET"
-  final URL url = new URL("https://nngm-nms.medicalsyn.com/api/v1.0/Public/Person")
-
-  // Check if the result is already in the cache and not expired
-  def cacheKey = url.toString()
-  def cachedResult = cache.get(cacheKey)
-  if (cachedResult != null && cachedResult.timestamp + 60 * 1000 > System.currentTimeMillis()) {
-    println("Returning cached result for $url")
-    return cachedResult.data as List<NNGMPractitioner>
-  }
-
-  final def json = queryMdr(url, httpMethod)
-  return json?.data?.collect { practitionerData ->
-    // Collect data and return
-    new NNGMPractitioner(
-            internalSequenceIdentifier: practitionerData.internalSequenceIdentifier,
-            title: practitionerData.title,
-            firstName: practitionerData.firstName,
-            lastName: practitionerData.lastName,
-            organizationAssignments: practitionerData.organizationAssignments ?: []
-    )
-  }
-}
-/**
- * Executes the REST query, validates and returns the result, if exists.
- * @return JsonSlurper with the REST response or null, if response was not valid.
- */
-private static def queryMdr(final URL url, final String httpMethod) {
-  final HttpURLConnection connection = url.openConnection() as HttpURLConnection
-  connection.setRequestMethod(httpMethod)
-  connection.setRequestProperty("Accept", "application/json")
-
-  if (!validateResponse(connection.getResponseCode(), httpMethod, url)) {
-    return null
-  }
-
-  return connection.getInputStream().withCloseable { final inStream ->
-    new JsonSlurper().parse(inStream as InputStream)
-  }
+    String internalSequenceIdentifier
+    String title
+    String firstName
+    String lastName
+    List<String> organizationAssignments = []
 }
 
 /**
- * Validates the HTTP response
- * @return true, if status code is valid 200 or otherwise false. A false response is logged.
+ * Trying to find a better approach than mapping the centraxx practitioner to the given NNGM file
+ * @param firstName
+ * @param lastName
+ * @return matched practitioner with internalSequenceIdentifier or the local match without internalSequenceIdentifier
  */
-private static boolean validateResponse(final int httpStatusCode, final String httpMethod, final URL url) {
-  final int expectedStatusCode = 200
-  if (httpStatusCode != expectedStatusCode) {
-    LoggerFactory.getLogger(getClass()).warn("'" + httpMethod + "' request on '" + url + "' returned status code: " + httpStatusCode + ". Expected: " + expectedStatusCode)
-    return false
-  }
-  return true
+static NNGMPractitioner matchPractitioner(String firstName, String lastName, String title) {
+    def jsonSlurper = new JsonSlurper()
+    def jsonFile = new File('practitioners.json')
+    def reader = new FileReader(jsonFile)
+    def json = jsonSlurper.parse(reader)
+
+    println("Searching for " + firstName + " " + lastName)
+
+    def foundPractitioner = json.find { it.firstName == firstName && it.lastName == lastName }
+    def practitioner = new NNGMPractitioner()
+    practitioner.title = title
+    practitioner.firstName = firstName
+    practitioner.lastName = lastName
+    if (foundPractitioner) {
+        println("Found practitioner by first and last name")
+        practitioner.title = foundPractitioner.title
+        practitioner.firstName = foundPractitioner.firstName
+        practitioner.lastName = foundPractitioner.lastName
+        practitioner.internalSequenceIdentifier = foundPractitioner.internalSequenceIdentifier
+        practitioner.organizationAssignments = foundPractitioner.organizationAssignments
+    }
+    return practitioner
+}
+
+static String normalizeName(String title, String firstName, String lastName) {
+    if (title) {
+        return title + " " + firstName + " " + lastName;
+    } else {
+        return firstName + " " + lastName
+    }
 }
