@@ -45,6 +45,16 @@
       "selectFromCxxEntity": "LABOR_FINDING_LABOR_VALUE",
       "transformByTemplate": "laborFinding",
       "exportToFhirResource": "Observation"
+    },
+    {
+      "selectFromCxxEntity": "PATIENT_MASTER",
+      "transformByTemplate": "vitalstatus",
+      "exportToFhirResource": "Observation"
+    },
+    {
+      "selectFromCxxEntity": "HISTOLOGY",
+      "transformByTemplate": "histologie",
+      "exportToFhirResource": "Observation"
     }
   ]
 }
