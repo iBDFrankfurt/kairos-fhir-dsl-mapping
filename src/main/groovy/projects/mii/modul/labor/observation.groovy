@@ -20,7 +20,7 @@ import static de.kairos.fhir.centraxx.metamodel.RootEntities.laborFindingLaborVa
  * Represented by CXX LaborFindingLaborValue
  * specified by https://simplifier.net/medizininformatikinitiative-modullabor/observationlab
  * The profile focuses on numeric values. LaborValues that are not monitored as numerical values
- * are added as a component to the observation as most of them can not be mapped to a ValueCodeableConcept.
+ * are added as a component to the laborFinding as most of them can not be mapped to a ValueCodeableConcept.
  * @author Mike Wähnert, Jonas Küttner
  * @since v.1.8.0, CXX.v.3.18.1
  */

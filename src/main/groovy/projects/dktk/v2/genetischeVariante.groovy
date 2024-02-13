@@ -19,7 +19,7 @@ import static de.kairos.fhir.centraxx.metamodel.RootEntities.laborMapping
  * @since kairos-fhir-dsl.v.1.12.0, CXX.v.3.18.1.19, CXX.v.3.18.2
  *
  * Based on the measurement profile, which has been specified by the CCP-IT group in ../xml/masterdata_molecularmarker.xml
- * It does not cover the specified FHIR observation component slices like Amino-acid-change, DNA-change, etc.
+ * It does not cover the specified FHIR laborFinding component slices like Amino-acid-change, DNA-change, etc.
  * It does not specify any LOINC codes.
  * this scrip assumes that the measurement parameter
  * * CCP_MOLECULAR_MARKER_STATUS represents GenetischeVarianteCS

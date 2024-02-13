@@ -30,6 +30,21 @@
       "selectFromCxxEntity": "ATTENDING_DOCTOR",
       "transformByTemplate": "practitioner",
       "exportToFhirResource": "Practitioner"
+    },
+    {
+      "selectFromCxxEntity": "SPECIMEN",
+      "transformByTemplate": "specimen",
+      "exportToFhirResource": "Specimen"
+    },
+    {
+      "selectFromCxxEntity": "LABOR_MAPPING",
+      "transformByTemplate": "laborMapping",
+      "exportToFhirResource": "Observation"
+    },
+    {
+      "selectFromCxxEntity": "LABOR_FINDING_LABOR_VALUE",
+      "transformByTemplate": "laborFinding",
+      "exportToFhirResource": "Observation"
     }
   ]
 }

@@ -11,7 +11,7 @@ import static de.kairos.fhir.centraxx.metamodel.RootEntities.organizationUnit
  * Specified by https://simplifier.net/nngm-form/profilenngmorganizationorganisation
  * Endpoint: https://nngm-nms.medicalsyn.com/api/v1.0/Public/Organization
  *
- * Currently this stays untested as we do not have the correct organizations inside of our CentraXX
+ * Currently this stays untested as we do not have the correct organizations.json inside of our CentraXX
  *
  * @author Timo Schneider
  * @since v.1.13.0, CXX.v.2022.1.0 exportable,
@@ -57,7 +57,7 @@ class NNGMOrganization {
 
 /**
  * Trying to find a better approach than mapping the CentraXX organization to the given nNGM file
- * You may need to add a list of organizations that maps to your local organization {@see mappingList}
+ * You may need to add a list of organizations.json that maps to your local organization {@see mappingList}
  * @param firstName
  * @param lastName
  * @return matched practitioner with internalSequenceIdentifier or the local match without internalSequenceIdentifier

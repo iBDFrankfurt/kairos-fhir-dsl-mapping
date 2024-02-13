@@ -26,7 +26,7 @@ import static de.kairos.fhir.centraxx.metamodel.RootEntities.sample
  * 3. Mapping: postcentrifugationdate (Einfrierzeitpunkt HUB) to firstrepositiondate (Einfrierzeitpunkt DZHK)
  * 4. Mapping OrgUnit: P-2216-NAP (HUB) to "NUM_Hannover" (DZHK)
  * 5. Mapping IDs: EXTSAMPLEID (HUB) to SAMPLEID (DZHK)
- * 6. Filter: Link only LaborMethod "DZHKFLAB" NUM WF3 -> see observation.groovy
+ * 6. Filter: Link only LaborMethod "DZHKFLAB" NUM WF3 -> see laborFinding.groovy
  * 7. Mapping: HUB sampleType.code, receptable.code, sprecPrimarySampleContainer.sprecCode to DZHK sampleType
  * 8. Filter samples that were created not longer than 3 days ago.
  * 9. Mapping: Filter samples that were created not longer than 3 days ago.

@@ -54,14 +54,14 @@ observation {
   if (!(isSampleMapping && isDzhkMethod)) {
     return
   }
-  
+
   final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
   final SimpleDateFormat numDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
 
   final def extSampleId = context.source[laborMapping().sample().idContainer()]?.find { final def entry ->
     "NAPKONSMP" == entry[SampleIdContainer.ID_CONTAINER_TYPE]?.getAt(IdContainerType.CODE)
   }
-  
+
   if (!extSampleId) {
     return
   }
@@ -87,7 +87,7 @@ observation {
   	observationCode = "Biomaterial-Zentrifugation_" + extSampleId[SampleIdContainer.PSN] + "_" + numDateFormat.format(observationDate)
   }
   else {
-	// Do not create observation if observationDate is NULL
+	// Do not create laborFinding if observationDate is NULL
 	return
   }
 
@@ -107,7 +107,7 @@ observation {
       system = "urn:centraxx"
     }
   }
-  
+
   final def patIdContainer = context.source[laborMapping().relatedPatient().idContainer()]?.find {
     "NAPKON" == it[IdContainer.ID_CONTAINER_TYPE]?.getAt(IdContainerType.CODE)
   }
