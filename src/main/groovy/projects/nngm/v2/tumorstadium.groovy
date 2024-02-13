@@ -150,7 +150,7 @@ observation {
     component {
       code {
         coding {
-          system = "399566009"
+          system = "http://snomed.info/sct"
           code = "399566009"
         }
       }
