@@ -22,6 +22,11 @@
       "exportToFhirResource": "Condition"
     },
     {
+      "selectFromCxxEntity": "ORGANIZATION_UNIT",
+      "transformByTemplate": "organization",
+      "exportToFhirResource": "Organization"
+    },
+    {
       "selectFromCxxEntity": "ATTENDING_DOCTOR",
       "transformByTemplate": "practitioner",
       "exportToFhirResource": "Practitioner"

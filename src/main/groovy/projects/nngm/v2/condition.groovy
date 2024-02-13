@@ -6,6 +6,12 @@ import static de.kairos.fhir.centraxx.metamodel.RootEntities.diagnosis
 
 /**
  * Represented by a CXX Diagnosis
+ * Tries to find the first Diagnosis of a Patient by first iterating over all Diagnoses.
+ * Returns the first diagnosis by date.
+ * After processing every diagnosis of one patient, try to match the current processed diagnosis with the first diagnosis
+ *
+ * So the bad thing is, for every patient this script will have to iterate over all diagnoses first and then iterates over each diagnosis to match the first diagnosis.
+ * If there is something better, please let me know.
  *
  * Specified by https://simplifier.net/oncology/primaerdiagnose
  * @author Timo Schneider
@@ -27,7 +33,8 @@ condition {
 
     final String icdCode = context.source[firstDiagnosis.icdEntry().code()]
 
-    if (firstDiagId != diagId) { // only process firstDiagnosis
+    // only keep the first diagnosis and skip every other diagnosis
+    if (firstDiagId != diagId) {
         return
     }
 
