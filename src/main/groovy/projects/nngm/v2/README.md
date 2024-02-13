@@ -3,11 +3,8 @@
 nNGM Mappings*
 ======================
 
-* Profile definitions: https://simplifier.net/guide/nngm-form/home?version=current
-* Mappings can be used to export to DKTK Bridgehead
-* The changelog can be found below.
+* Profile definitions: https://simplifier.net/guide/nNGM-Form/Home?version=current
 
 ---
-*With the kind support from  [CCP IT working group of DKTK/DKFZ](https://dktk.dkfz.de/en/clinical-platform/working-groups-partners/ccp-it).
 
 # Changelog

@@ -55,6 +55,11 @@
       "selectFromCxxEntity": "HISTOLOGY",
       "transformByTemplate": "histologie",
       "exportToFhirResource": "Observation"
+    },
+    {
+      "selectFromCxxEntity": "TNM",
+      "transformByTemplate": "tumorstadium",
+      "exportToFhirResource": "Observation"
     }
   ]
 }
