@@ -31,7 +31,7 @@ condition {
             type {
                 coding {
                     system = "urn:centraxx"
-                    code = "diagnosisId"
+                    code = diagnosisId as String
                 }
             }
         }
@@ -50,31 +50,19 @@ condition {
         date = normalizeDate(context.source[diagnosis().diagnosisDate().date()] as String)
     }
 
-    final String multipleCodingSymbol = mapUsage(context.source[diagnosis().icdEntry().usage()] as String)
-
     // Histologie
+    final def icdOEntry = context.source[diagnosis().icdOentry().preferredLong()]
     code {
         coding {
-            if (multipleCodingSymbol != null) {
-                extension {
-                    url = "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen"
-                    valueCoding {
-                        system = "http://fhir.de/CodeSystem/icd-10-gm-mehrfachcodierungs-kennzeichen"
-                        version = "2021"
-                        code = multipleCodingSymbol
-                    }
-                }
-            }
             system = "urn:oid:2.16.840.1.113883.6.43.1"
-            code = icdCode as String
-            version = context.source[diagnosis().icdEntry().catalogue().catalogueVersion()]
+            code = icdOEntry as String
+            version = context.source[diagnosis().icdOentry().catalogue().catalogueVersion()]
         }
-        text = context.source[diagnosis().icdEntry().preferredLong()] as String
+        text = icdOEntry as String
     }
 
     // ICD-O-3 topography
-    final String catalogName = context.source[diagnosis().icdEntry().catalogue().name()]
-    if (catalogName != null && catalogName.contains("ICD-O-3")) {
+    if(context.source[diagnosis().icdOcode()]) {
         bodySite {
             coding {
                 system = "http://terminology.hl7.org/CodeSystem/icd-o-3"
@@ -104,32 +92,6 @@ condition {
     }
 }
 
-static String mapUsage(final String usage) {
-    switch (usage) {
-        case "optional":
-            return "!"
-        case "aster":
-            return "*"
-        case "dagger":
-            return "†"
-        default:
-            return null
-    }
-}
-
-// usage with enum with 1.16.0 kairos-fhir-dsl
-/*static String mapUsage(final IcdEntryUsage usage){
-  switch (usage){
-    case IcdEntryUsage.OPTIONAL :
-      return "!"
-    case IcdEntryUsage.ASTER:
-      return "*"
-    case IcdEntryUsage.DAGGER:
-      return "†"
-    default:
-      return null
-  }
-}*/
 
 /**
  * removes milli seconds and time zone.
