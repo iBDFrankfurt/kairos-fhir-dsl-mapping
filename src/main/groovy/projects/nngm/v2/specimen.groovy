@@ -1,12 +1,9 @@
 package projects.nngm.v2
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum
-import de.kairos.centraxx.fhir.r4.utils.FhirUrls
+import de.kairos.fhir.centraxx.metamodel.AbstractIdContainer
 import de.kairos.fhir.centraxx.metamodel.IdContainerType
 
-import static de.kairos.fhir.centraxx.metamodel.AbstractIdContainer.ID_CONTAINER_TYPE
-import static de.kairos.fhir.centraxx.metamodel.AbstractIdContainer.PSN
-import static de.kairos.fhir.centraxx.metamodel.AbstractSample.ID_CONTAINER
 import static de.kairos.fhir.centraxx.metamodel.AbstractSample.PARENT
 import static de.kairos.fhir.centraxx.metamodel.RootEntities.abstractSample
 import static de.kairos.fhir.centraxx.metamodel.RootEntities.sample
@@ -32,15 +29,29 @@ specimen {
 
     id = "Specimen/" + context.source[abstractSample().id()]
 
-    context.source[ID_CONTAINER]?.each { final idContainer ->
-        if (idContainer) {
+    context.source[sample().idContainer()].each { final def idObj ->
+        if (idObj) {
             identifier {
-                value = idContainer[PSN]
                 type {
                     coding {
-                        system = FhirUrls.System.IdContainerType.BASE_URL
-                        code = idContainer[ID_CONTAINER_TYPE]?.getAt(IdContainerType.CODE)
+                        system = "urn:centraxx"
+                        code = idObj[AbstractIdContainer.PSN]
+                        display = idObj[AbstractIdContainer.ID_CONTAINER_TYPE][IdContainerType.CODE] as String
                     }
+                }
+                value = idObj[AbstractIdContainer.PSN]
+            }
+        }
+    }
+
+    // Biopsie
+    if (context.source[abstractSample().histoNumber()]) {
+        identifier {
+            value = context.source[abstractSample().histoNumber()]
+            type {
+                coding {
+                    system = "http://terminology.hl7.org/CodeSystem/v2-0203"
+                    code = context.source[abstractSample().histoNumber()]
                 }
             }
         }

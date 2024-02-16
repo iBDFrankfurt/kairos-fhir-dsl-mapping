@@ -51,18 +51,20 @@ condition {
     }
 
     // Histologie
-    final def icdOEntry = context.source[diagnosis().icdOentry().preferredLong()]
-    code {
-        coding {
-            system = "urn:oid:2.16.840.1.113883.6.43.1"
-            code = icdOEntry as String
-            version = context.source[diagnosis().icdOentry().catalogue().catalogueVersion()]
+    if (context.source[diagnosis().icdOentry()]) {
+        final def icdOEntry = context.source[diagnosis().icdOentry().preferredLong()]
+        code {
+            coding {
+                system = "urn:oid:2.16.840.1.113883.6.43.1"
+                code = icdOEntry as String
+                version = context.source[diagnosis().icdOentry().catalogue().catalogueVersion()]
+            }
+            text = icdOEntry as String
         }
-        text = icdOEntry as String
     }
 
-    // ICD-O-3 topography
-    if(context.source[diagnosis().icdOcode()]) {
+    // topography
+    if(context.source[diagnosis().icdEntry()]) {
         bodySite {
             coding {
                 system = "http://terminology.hl7.org/CodeSystem/icd-o-3"

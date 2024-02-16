@@ -82,7 +82,7 @@ observation {
                     system = "urn:centraxx"
                     code = laborValueCode
                 }
-                laborValue?.getAt(LaborValue.IDCONTAINERS)?.each { final idContainer ->
+                laborValue?.getAt(ID_CONTAINER_TYPE)?.each { final idContainer ->
                     coding {
                         system = idContainer[ID_CONTAINER_TYPE]?.getAt(CODE)
                         code = idContainer[PSN] as String

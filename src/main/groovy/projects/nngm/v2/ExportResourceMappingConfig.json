@@ -32,7 +32,7 @@
       "exportToFhirResource": "Practitioner"
     },
     {
-      "selectFromCxxEntity": "SPECIMEN",
+      "selectFromCxxEntity": "SAMPLE",
       "transformByTemplate": "specimen",
       "exportToFhirResource": "Specimen"
     },
