@@ -110,7 +110,7 @@ observation {
       }
       valueCodeableConcept {
         coding {
-          system = "http://dktk.dkfz.de/fhir/onco/core/CodeSystem/TNMTCS"
+          system = "http://dktk.dkfz.de/fhir/onco/core/CodeSystem/TNMNCS"
           code = (context.source[tnm().n()] as String).trim()
         }
       }
@@ -139,7 +139,7 @@ observation {
       }
       valueCodeableConcept {
         coding {
-          system = "http://dktk.dkfz.de/fhir/onco/core/CodeSystem/TNMTCS"
+          system = "http://dktk.dkfz.de/fhir/onco/core/CodeSystem/TNMMCS"
           code = (context.source[tnm().m()] as String).trim()
         }
       }

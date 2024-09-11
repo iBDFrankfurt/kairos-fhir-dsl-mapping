@@ -2,7 +2,17 @@ package projects.patientfinder
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum
 import de.kairos.centraxx.fhir.r4.utils.FhirUrls
-import de.kairos.fhir.centraxx.metamodel.*
+import de.kairos.fhir.centraxx.metamodel.AbstractCatalog
+import de.kairos.fhir.centraxx.metamodel.CatalogEntry
+import de.kairos.fhir.centraxx.metamodel.CrfTemplateField
+import de.kairos.fhir.centraxx.metamodel.Episode
+import de.kairos.fhir.centraxx.metamodel.IcdEntry
+import de.kairos.fhir.centraxx.metamodel.LaborFindingLaborValue
+import de.kairos.fhir.centraxx.metamodel.LaborValue
+import de.kairos.fhir.centraxx.metamodel.LaborValueNumeric
+import de.kairos.fhir.centraxx.metamodel.PrecisionDate
+import de.kairos.fhir.centraxx.metamodel.ValueReference
+import de.kairos.fhir.centraxx.metamodel.enums.LaborMappingType
 import de.kairos.fhir.centraxx.metamodel.enums.LaborValueDType
 import org.hl7.fhir.r4.model.Observation
 
@@ -23,9 +33,7 @@ import static de.kairos.fhir.centraxx.metamodel.RootEntities.laborMapping
  */
 observation {
 
-  if (context.source[laborMapping().laborFinding().laborMethod().code()] == "Histology") {
-    return
-  }
+  final def laborMethod = context.source[laborMapping().laborFinding().laborMethod()]
 
   id = "Observation/" + context.source[laborMapping().laborFinding().id()]
 
@@ -39,12 +47,18 @@ observation {
   }
 
   effectiveDateTime {
-    date = context.source[laborMapping().laborFinding().findingDate().date()]
+    date = normalizeDate(context.source[laborMapping().laborFinding().findingDate().date()] as String)
     precision = TemporalPrecisionEnum.DAY.toString()
   }
 
   subject {
     reference = "Patient/" + context.source[laborMapping().relatedPatient().id()]
+  }
+
+  if (context.source[laborMapping().mappingType()] as LaborMappingType == LaborMappingType.SAMPLELABORMAPPING){
+    specimen {
+      reference = "Specimen/" + context.source[laborMapping().relatedOid()]
+    }
   }
 
 
@@ -56,9 +70,7 @@ observation {
     }
   }
 
-  final def laborMethod = context.source[laborMapping().laborFinding().laborMethod().code()]
-
-  if (laborMethod.equals("SACT_Profile")) {
+  if (laborMethod[CODE].equals("SACT_Profile")) {
     basedOn {
       reference = "CarePlan/SACT-" + context.source[laborMapping().laborFinding().id()]
     }
@@ -75,7 +87,7 @@ observation {
 
     final String laborValueCode = laborValue?.getAt(CODE) as String
 
-    if (laborMethod.equals("SACT_Profile") && isMappedElseWhere(laborValueCode)) {
+    if (laborMethod[CODE].equals("SACT_Profile") && isMappedElseWhere(laborValueCode)) {
       return
     }
 
@@ -262,4 +274,13 @@ private static boolean mappedInMedAdmin(final String code) {
 private static boolean mappedInCarePlan(final String code) {
   final List mappedInCarePlan = ["Regimen", "Date_Decision_To_Treat", "Start_Date_Of_Regimen"]
   return code in mappedInCarePlan
+}
+
+/**
+ * removes milli seconds and time zone.
+ * @param dateTimeString the date time string
+ * @return the result might be something like "1989-01-15T00:00:00"
+ */
+static String normalizeDate(final String dateTimeString) {
+  return dateTimeString != null ? dateTimeString.substring(0, 19) : null
 }

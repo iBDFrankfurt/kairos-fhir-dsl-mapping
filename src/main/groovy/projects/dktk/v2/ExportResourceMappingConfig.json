@@ -58,12 +58,12 @@
     },
     {
       "selectFromCxxEntity": "HISTOLOGY",
-      "transformByTemplate": "histologie",
+      "transformByTemplate": "grading",
       "exportToFhirResource": "Observation"
     },
     {
       "selectFromCxxEntity": "HISTOLOGY",
-      "transformByTemplate": "grading",
+      "transformByTemplate": "histologie",
       "exportToFhirResource": "Observation"
     },
     {
@@ -104,6 +104,16 @@
     {
       "selectFromCxxEntity": "DIAGNOSIS",
       "transformByTemplate": "todUrsache",
+      "exportToFhirResource": "Observation"
+    },
+    {
+      "selectFromCxxEntity": "PROGRESS",
+      "transformByTemplate": "ecog",
+      "exportToFhirResource": "Observation"
+    },
+    {
+      "selectFromCxxEntity": "OTHER_CLASSIFICATION",
+      "transformByTemplate": "weitereKlassifikation",
       "exportToFhirResource": "Observation"
     }
   ]

@@ -4,7 +4,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +13,6 @@ import javax.annotation.Nonnull;
 
 /**
  * Registry class for FHIR URI definitions
- *
  * @author Mike Wähnert
  */
 public final class FhirUrls {
@@ -43,10 +41,11 @@ public final class FhirUrls {
 
     public static List<String> getAllDomains() {
       final List<String> domains = new ArrayList<>();
-      domains.add(UPDATE_WITH_OVERWRITE);
+      domains.add(SAMPLE_LOCATION);
       domains.add(SPREC);
       domains.add(SAMPLE_CATEGORY);
       domains.add(LABOR_MAPPING);
+      domains.add(UPDATE_WITH_OVERWRITE);
       domains.addAll(Patient.getAllDomains());
       domains.addAll(Sprec.getAllDomains());
       domains.addAll(Study.getAllDomains());
@@ -74,6 +73,20 @@ public final class FhirUrls {
       domains.addAll(ContactAddress.getAllDomains());
       domains.addAll(RadiationTarget.getAllDomains());
       domains.addAll(PatientTransfer.getAllDomains());
+      domains.addAll(FollowDisease.getAllDomains());
+      domains.addAll(GtdsTherapy.getAllDomains());
+      domains.addAll(GtdsTherapy.Surgery.getAllDomains());
+      domains.addAll(GtdsTherapy.RadiationTherapy.getAllDomains());
+      domains.addAll(GtdsTherapy.SystemTherapy.getAllDomains());
+      domains.addAll(RadiationComponent.getAllDomains());
+      domains.addAll(SurgeryComponent.getAllDomains());
+      domains.addAll(PreexistingIllness.getAllDomains());
+      domains.addAll(DeathCause.getAllDomains());
+      domains.addAll(AdverseEffects.getAllDomains());
+      domains.addAll(StudyMember.getAllDomains());
+      domains.addAll(FhirDefaults.getAllDomains());
+      domains.addAll(PatientInsurance.getAllDomains());
+      domains.addAll(MedProcedure.getAllDomains());
       return domains;
     }
 
@@ -111,16 +124,48 @@ public final class FhirUrls {
       }
     }
 
+    public static final class MedProcedure {
+      private static final String BASE_URL = Extension.BASE_URL + "/medProcedure";
+      public static final String PROCEDURE_STATUS_PLANNED = BASE_URL + "/status/planned";
+
+      private MedProcedure() {
+      }
+
+      @Nonnull
+      public static Collection<String> getAllDomains() {
+        return asList(PROCEDURE_STATUS_PLANNED);
+      }
+    }
+
     public static final class ContactAddress {
       private static final String BASE_URL = Extension.BASE_URL + "/address";
       public static final String TITLE = BASE_URL + "/title";
+      public static final String INSTITUTE = BASE_URL + "/institute";
+      public static final String DEPARTMENT = BASE_URL + "/department";
+      public static final String POSITION = BASE_URL + "/position";
 
       private ContactAddress() {
       }
 
       @Nonnull
       public static Collection<String> getAllDomains() {
-        return asList(TITLE);
+        return asList(TITLE, INSTITUTE, DEPARTMENT, POSITION);
+      }
+    }
+
+    public static final class PatientInsurance {
+      private static final String BASE_URL = Extension.BASE_URL + "/patientInsurance";
+      public static final String POLICE_NUMBER = BASE_URL + "/policeNumber";
+      public static final String GROUP_NUMBER = BASE_URL + "/groupNumber";
+      public static final String INSURED = BASE_URL + "/insured";
+      public static final String RANK = BASE_URL + "/rank";
+
+      private PatientInsurance() {
+      }
+
+      @Nonnull
+      public static Collection<String> getAllDomains() {
+        return asList(POLICE_NUMBER, GROUP_NUMBER, INSURED, RANK);
       }
     }
 
@@ -139,13 +184,32 @@ public final class FhirUrls {
     }
 
     public static final class RadiationTarget {
-      public static final String RADIATION_COMPONENT_ID = Extension.BASE_URL + "/radiationComponentId";
+      private static final String BASE_URL = Extension.BASE_URL + "/radiationTarget";
+      public static final String RADIATION_COMPONENT = BASE_URL + "/radiationComponent";
 
-      private RadiationTarget() {}
+      private RadiationTarget() {
+      }
 
       @Nonnull
       public static List<String> getAllDomains() {
-        return singletonList(RADIATION_COMPONENT_ID);
+        return singletonList(RADIATION_COMPONENT);
+      }
+    }
+
+    public static final class AdverseEffects {
+      private static final String BASE_URL = Extension.BASE_URL + "/adverseEffects";
+      public static final String RELATED = BASE_URL + "/related";
+      public static final String KIND = BASE_URL + "/kind";
+      public static final String COMMENTS = BASE_URL + "/comments";
+      public static final String GRADE = BASE_URL + "/grade";
+      public static final String VERSION = BASE_URL + "/version";
+
+      private AdverseEffects() {
+      }
+
+      @Nonnull
+      public static List<String> getAllDomains() {
+        return asList(RELATED, KIND, COMMENTS, GRADE, VERSION);
       }
     }
 
@@ -154,7 +218,7 @@ public final class FhirUrls {
       public static final String SOURCEDICT = BASE_URL + "/sourceDict";
 
       public static Collection<String> getAllDomains() {
-        return asList(SOURCEDICT);
+        return singletonList(SOURCEDICT);
       }
 
       private Histology() {
@@ -190,6 +254,333 @@ public final class FhirUrls {
                       POSTCARE_SCHEMA,
                       VISITCAUSE_DICT
         );
+      }
+    }
+
+    public static final class FollowDisease {
+      private static final String BASE_URL = Extension.BASE_URL + "/followDisease";
+      public static final String VERSION = BASE_URL + "/version";
+      public static final String GRADE = BASE_URL + "/grade";
+      public static final String FOLLOWDISEASEKINDDICT = BASE_URL + "/followDiseaseKindDict";
+
+      private FollowDisease() {
+      }
+
+      @Nonnull
+      public static Collection<String> getAllDomains() {
+        return asList(
+          VERSION,
+          GRADE,
+          FOLLOWDISEASEKINDDICT
+        );
+      }
+    }
+
+    public static final class GtdsTherapy {
+      private static final String BASE_URL = Extension.BASE_URL + "/gtdsTherapy";
+      public static final String TUMOR = BASE_URL + "/tumor";
+
+      @Nonnull
+      public static Collection<String> getAllDomains() {
+        return singletonList(
+          TUMOR
+        );
+      }
+
+      private GtdsTherapy() {
+      }
+
+      public static final class Surgery {
+        private static final String BASE_URL = GtdsTherapy.BASE_URL + "/surgery";
+        public static final String INTENTIONDICT = BASE_URL + "/intentionDict";
+        public static final String CONCEPTID = BASE_URL + "/conceptId";
+        public static final String THERAPYSTEP = BASE_URL + "/therapyStep";
+        public static final String DATEACCURACYDICT = BASE_URL + "/dateAccuracyDict";
+        public static final String ACCOMPLISHEDBYTEXT = BASE_URL + "/accomplishedByText";
+        public static final String CAPTUREFINISHSTATEDICT = BASE_URL + "/captureFinishStateDict";
+        public static final String OPDESCRIPTION = BASE_URL + "/opDescription";
+        public static final String OPTEXT = BASE_URL + "/opText";
+        public static final String RCLASSIFICATIONDICT = BASE_URL + "/rClassificationDict";
+        public static final String LYMPHNODESEXAMINATED = BASE_URL + "/lymphNodesExaminated";
+        public static final String LYMPHNODESINFESTED = BASE_URL + "/lymphNodesInfested";
+        public static final String LYMPHNODE_1_EXAMINATED = BASE_URL + "/lymphNode_1_Examinated";
+        public static final String LYMPHNODE_1_INFESTED = BASE_URL + "/lymphNode_1_Infested";
+        public static final String LYMPHNODE_2_EXAMINATED = BASE_URL + "/lymphNode_2_Examinated";
+        public static final String LYMPHNODE_2_INFESTED = BASE_URL + "/lymphNode_2_Infested";
+        public static final String LYMPHNODE_3_EXAMINATED = BASE_URL + "/lymphNode_3_Examinated";
+        public static final String LYMPHNODE_3_INFESTED = BASE_URL + "/lymphNode_3_Infested";
+        public static final String LYMPHNODE_4_EXAMINATED = BASE_URL + "/lymphNode_4_Examinated";
+        public static final String LYMPHNODE_4_INFESTED = BASE_URL + "/lymphNode_4_Infested";
+        public static final String SENTINELSEXAMINATED = BASE_URL + "/sentinelsExaminated";
+        public static final String SENTINELSINFESTED = BASE_URL + "/sentinelsInfested";
+        public static final String BUILDINGDATE = BASE_URL + "/buildingDate";
+        public static final String COMPLICATIONSDICT = BASE_URL + "/complicationsDict";
+        public static final String TARGETPRIMARYTUMOURDICT = BASE_URL + "/targetPrimaryTumourDict";
+        public static final String TARGETLYMPHNODEDICT = BASE_URL + "/targetLymphnodeDict";
+        public static final String TARGETMETASTASISDICT = BASE_URL + "/targetMetastasisDict";
+        public static final String RESECTIONDICT = BASE_URL + "/resectionDict";
+        public static final String TARGETCOMPLICATIONDICT = BASE_URL + "/targetComplicationDict";
+        public static final String TARGETOTHERDICT = BASE_URL + "/targetOtherDict";
+        public static final String RESIDUALLOCALISATIONDICT = BASE_URL + "/residualLocalisationDict";
+        public static final String RCLASSIFICATIONSUFFIX = BASE_URL + "/rClassificationSuffix";
+        public static final String RCLASSIFICATIONLOCALDICT = BASE_URL + "/rClassificationLocalDict";
+        public static final String URGENCYDICT = BASE_URL + "/urgencyDict";
+        public static final String SUCCESSDICT = BASE_URL + "/successDict";
+        public static final String LARGESTDIAMETER = BASE_URL + "/largestDiameter";
+        public static final String DISTANCERESECTION = BASE_URL + "/distanceResection";
+        public static final String OPERATEUR1TEXT = BASE_URL + "/operateur1Text";
+        public static final String OPERATEUR2TEXT = BASE_URL + "/operateur2Text";
+        public static final String ASASCORE = BASE_URL + "/asaScore";
+        public static final String SURGICALACCESS = BASE_URL + "/surgicalAccess";
+
+        private Surgery() {
+        }
+
+        @Nonnull
+        public static Collection<String> getAllDomains() {
+          return asList(
+            INTENTIONDICT,
+            CONCEPTID,
+            THERAPYSTEP,
+            DATEACCURACYDICT,
+            ACCOMPLISHEDBYTEXT,
+            CAPTUREFINISHSTATEDICT,
+            OPDESCRIPTION,
+            OPTEXT,
+            RCLASSIFICATIONDICT,
+            LYMPHNODESEXAMINATED,
+            LYMPHNODESINFESTED,
+            LYMPHNODE_1_EXAMINATED,
+            LYMPHNODE_1_INFESTED,
+            LYMPHNODE_2_EXAMINATED,
+            LYMPHNODE_2_INFESTED,
+            LYMPHNODE_3_EXAMINATED,
+            LYMPHNODE_3_INFESTED,
+            LYMPHNODE_4_EXAMINATED,
+            LYMPHNODE_4_INFESTED,
+            SENTINELSEXAMINATED,
+            SENTINELSINFESTED,
+            BUILDINGDATE,
+            COMPLICATIONSDICT,
+            TARGETPRIMARYTUMOURDICT,
+            TARGETLYMPHNODEDICT,
+            TARGETMETASTASISDICT,
+            RESECTIONDICT,
+            TARGETCOMPLICATIONDICT,
+            TARGETOTHERDICT,
+            RESIDUALLOCALISATIONDICT,
+            RCLASSIFICATIONSUFFIX,
+            RCLASSIFICATIONLOCALDICT,
+            URGENCYDICT,
+            SUCCESSDICT,
+            LARGESTDIAMETER,
+            DISTANCERESECTION,
+            OPERATEUR1TEXT,
+            OPERATEUR2TEXT,
+            ASASCORE,
+            SURGICALACCESS
+          );
+        }
+      }
+
+      public static final class RadiationTherapy {
+        private static final String BASE_URL = GtdsTherapy.BASE_URL + "/radiationTherapy";
+        public static final String INTENTIONDICT = BASE_URL + "/intentionDict";
+        public static final String CONCEPTID = BASE_URL + "/conceptId";
+        public static final String THERAPYSTEP = BASE_URL + "/therapyStep";
+        public static final String DATEACCURACYDICT = BASE_URL + "/dateAccuracyDict";
+        public static final String ACCOMPLISHEDBYTEXT = BASE_URL + "/accomplishedByText";
+        public static final String CAPTUREFINISHSTATEDICT = BASE_URL + "/captureFinishStateDict";
+        public static final String COMMENTS = BASE_URL + "/comments";
+        public static final String FINALSTATEDICT = BASE_URL + "/finalStateDict";
+        public static final String ASSESSMENT = BASE_URL + "/assessment";
+        public static final String ADVERSEEFFECTSDICT = BASE_URL + "/adverseEffectsDict";
+        public static final String RADIATIONPATTERNID = BASE_URL + "/radiationPatternId";
+        public static final String THERAPYKINDDICT = BASE_URL + "/therapyKindDict";
+        public static final String RADIOCHEMODICT = BASE_URL + "/radioChemoDict";
+        public static final String TARGETPRIMARYTUMOURDICT = BASE_URL + "/targetPrimaryTumourDict";
+        public static final String TARGETLYMPHNODEDICT = BASE_URL + "/targetLymphnodeDict";
+        public static final String TARGETMETASTASISDICT = BASE_URL + "/targetMetastasisDict";
+        public static final String TARGETOTHERDICT = BASE_URL + "/targetOtherDict";
+
+        private RadiationTherapy() {
+        }
+
+        @Nonnull
+        public static Collection<String> getAllDomains() {
+          return asList(
+            INTENTIONDICT,
+            CONCEPTID,
+            THERAPYSTEP,
+            DATEACCURACYDICT,
+            ACCOMPLISHEDBYTEXT,
+            CAPTUREFINISHSTATEDICT,
+            COMMENTS,
+            FINALSTATEDICT,
+            ASSESSMENT,
+            ADVERSEEFFECTSDICT,
+            RADIATIONPATTERNID,
+            THERAPYKINDDICT,
+            RADIOCHEMODICT,
+            TARGETPRIMARYTUMOURDICT,
+            TARGETLYMPHNODEDICT,
+            TARGETMETASTASISDICT,
+            TARGETOTHERDICT
+          );
+        }
+      }
+
+      public static final class SystemTherapy {
+        private static final String BASE_URL = GtdsTherapy.BASE_URL + "/systemTherapy";
+        public static final String INTENTIONDICT = BASE_URL + "/intentionDict";
+        public static final String CONCEPTID = BASE_URL + "/conceptId";
+        public static final String THERAPYSTEP = BASE_URL + "/therapyStep";
+        public static final String DATEACCURACYDICT = BASE_URL + "/dateAccuracyDict";
+        public static final String ACCOMPLISHEDBYTEXT = BASE_URL + "/accomplishedByText";
+        public static final String CAPTUREFINISHSTATEDICT = BASE_URL + "/captureFinishStateDict";
+        public static final String ASSESSMENT = BASE_URL + "/assessment";
+        public static final String PROTOCOLTYPEDICT = BASE_URL + "/protocolTypeDict";
+        public static final String PROTOCOLID = BASE_URL + "/protocolId";
+        public static final String FINALSTATEDICT = BASE_URL + "/finalStateDict";
+        public static final String PLANNEDDURATION = BASE_URL + "/plannedDuration";
+        public static final String THERAPYKINDDICT = BASE_URL + "/therapyKindDict";
+        public static final String THERAPYTYPEDICT = BASE_URL + "/therapyTypeDict";
+        public static final String ADVERSEEFFECTSDICT = BASE_URL + "/adverseEffectsDict";
+        public static final String RADIOCHEMODICT = BASE_URL + "/radioChemoDict";
+        public static final String CYCLECOUNT = BASE_URL + "/cycleCount";
+        public static final String COMMENTS = BASE_URL + "/comments";
+        public static final String DESCRIPTION = BASE_URL + "/description";
+
+        private SystemTherapy() {
+        }
+
+        @Nonnull
+        public static Collection<String> getAllDomains() {
+          return asList(
+            INTENTIONDICT,
+            CONCEPTID,
+            THERAPYSTEP,
+            DATEACCURACYDICT,
+            ACCOMPLISHEDBYTEXT,
+            CAPTUREFINISHSTATEDICT,
+            ASSESSMENT,
+            PROTOCOLTYPEDICT,
+            PROTOCOLID,
+            FINALSTATEDICT,
+            PLANNEDDURATION,
+            THERAPYKINDDICT,
+            THERAPYTYPEDICT,
+            ADVERSEEFFECTSDICT,
+            RADIOCHEMODICT,
+            CYCLECOUNT,
+            COMMENTS,
+            DESCRIPTION
+          );
+        }
+      }
+    }
+
+    public static final class RadiationComponent {
+      private static final String BASE_URL = Extension.BASE_URL + "/radiationComponent";
+      public static final String DATEACCURACYDICT = BASE_URL + "/dateAccuracyDict";
+      public static final String COMMENTS = BASE_URL + "/comments";
+      public static final String ASSESSMENT = BASE_URL + "/assessment";
+      public static final String IRRADIATIONDAYS = BASE_URL + "/irradiationDays";
+      public static final String FRACTIONS = BASE_URL + "/fractions";
+      public static final String APPLICATIONKINDDICT = BASE_URL + "/applicationKindDict";
+      public static final String APPLICATIONTECH = BASE_URL + "/applicationTech";
+      public static final String APPLICATIONTECHTEXT = BASE_URL + "/applicationTechText";
+      public static final String SINGLEDOSE = BASE_URL + "/singleDose";
+      public static final String COMPLETEDOSE = BASE_URL + "/completeDose";
+      public static final String UNITDICT = BASE_URL + "/unitDict";
+      public static final String ICRUREFDICT = BASE_URL + "/icruRefDict";
+      public static final String VOLTAGE = BASE_URL + "/voltage";
+      public static final String VOLTAGEDIMENSION = BASE_URL + "/voltageDimension";
+      public static final String VOLTAGETEXT = BASE_URL + "/voltageText";
+      public static final String REFERENCE = BASE_URL + "/reference";
+      public static final String REFERENCEDIMENSION = BASE_URL + "/referenceDimension";
+      public static final String REFERENCETEXT = BASE_URL + "/referenceText";
+      public static final String MODIFICATIONDATE = BASE_URL + "/modificationDate";
+      public static final String MODIFICATIONREASON = BASE_URL + "/modificationReason";
+      public static final String INTERRUPTDICT = BASE_URL + "/interruptDict";
+      public static final String INTERRUPTREASONDICT = BASE_URL + "/interruptReasonDict";
+      public static final String INTERRUPTDURATION = BASE_URL + "/interruptDuration";
+      public static final String FINALSTATEDICT = BASE_URL + "/finalStateDict";
+      public static final String RADIATIONKINDDICT = BASE_URL + "/radiationKindDict";
+
+      private RadiationComponent() {
+      }
+
+      @Nonnull
+      public static Collection<String> getAllDomains() {
+        return asList(
+          DATEACCURACYDICT,
+          COMMENTS,
+          ASSESSMENT,
+          IRRADIATIONDAYS,
+          FRACTIONS,
+          APPLICATIONKINDDICT,
+          APPLICATIONTECH,
+          APPLICATIONTECHTEXT,
+          SINGLEDOSE,
+          COMPLETEDOSE,
+          UNITDICT,
+          ICRUREFDICT,
+          VOLTAGE,
+          VOLTAGEDIMENSION,
+          VOLTAGETEXT,
+          REFERENCE,
+          REFERENCEDIMENSION,
+          REFERENCETEXT,
+          MODIFICATIONDATE,
+          MODIFICATIONREASON,
+          INTERRUPTDICT,
+          INTERRUPTREASONDICT,
+          INTERRUPTDURATION,
+          FINALSTATEDICT,
+          RADIATIONKINDDICT
+        );
+      }
+    }
+
+    public static final class SurgeryComponent {
+      private static final String BASE_URL = Extension.BASE_URL + "/surgeryComponent";
+      public static final String COMPLICATIONS = BASE_URL + "/complications";
+
+      private SurgeryComponent() {
+      }
+
+      @Nonnull
+      public static Collection<String> getAllDomains() {
+        return singletonList(
+          COMPLICATIONS
+        );
+      }
+    }
+
+    public static final class PreexistingIllness {
+      private static final String BASE_URL = Extension.BASE_URL + "/preexistingIllness";
+      public static final String VERSION = BASE_URL + "/version";
+
+      private PreexistingIllness() {
+      }
+
+      @Nonnull
+      public static Collection<String> getAllDomains() {
+        return singletonList(VERSION);
+      }
+    }
+
+    public static final class DeathCause {
+      private static final String BASE_URL = Extension.BASE_URL + "/deathCause";
+      public static final String QUALIFICATOR = BASE_URL + "/qualificator";
+
+      private DeathCause() {
+      }
+
+      @Nonnull
+      public static Collection<String> getAllDomains() {
+        return singletonList(QUALIFICATOR);
       }
     }
 
@@ -257,12 +648,9 @@ public final class FhirUrls {
         private Location() {/* hide constructor */}
 
         public static List<String> getAllDomains() {
-          return asList(HABITATION,MED_DEPARTMENT,ROOM,BED,FLOOR);
+          return asList(HABITATION, MED_DEPARTMENT, ROOM, BED, FLOOR);
         }
-
-
       }
-
     }
 
     public static final class Medication {
@@ -287,23 +675,28 @@ public final class FhirUrls {
     public static final class Study {
       private static final String STUDY_BASE_URL = Extension.BASE_URL + "/study";
       public static final String PHASES = STUDY_BASE_URL + "/phases";
-
       public static final String VISITS = STUDY_BASE_URL + "/visits";
-      public static final String SCHEDULE = STUDY_BASE_URL + "/schedule";
-      public static final String SCHEDULE_MIN = SCHEDULE + "/min";
-      public static final String SCHEDULE_MAX = SCHEDULE + "/max";
+      public static final String STATUS = STUDY_BASE_URL + "/status";
 
       private Study() {/* hide constructor */}
 
       public static List<String> getAllDomains() {
-        return asList(PHASES, Phases.PHASE, Phase.PHASE_NAME, Phase.PHASE_DESCRIPTION,
-                      VISITS, Visits.VISIT, Visits.Visit.VISIT_NAME, Visits.Visit.VISIT_COPYVISITS);
+        final List<String> domains = new ArrayList<>();
+        domains.addAll(asList(PHASES, VISITS, STATUS));
+        domains.addAll(Visits.getAllDomains());
+        domains.addAll(Phases.getAllDomains());
+        domains.addAll(Schedule.getAllDomains());
+        return domains;
       }
 
       public static final class Visits {
         public static final String VISIT = VISITS + "/visit";
 
         private Visits() {
+        }
+
+        public static List<String> getAllDomains() {
+          return asList(VISIT, Visit.VISIT_NAME, Visit.VISIT_COPYVISITS);
         }
 
         public static final class Visit {
@@ -321,6 +714,9 @@ public final class FhirUrls {
         private Phases() {
         }
 
+        public static List<String> getAllDomains() {
+          return asList(PHASE, Phase.PHASE_NAME, Phase.PHASE_DESCRIPTION);
+        }
       }
 
       public static final class Phase {
@@ -338,7 +734,7 @@ public final class FhirUrls {
         public static final String UNDEFINED = SCHEDULE_BASE_URL + "/undefined";
 
         public static List<String> getAllDomains() {
-          return asList(SCHEDULE_MIN, SCHEDULE_MAX, UNDEFINED);
+          return asList(SCHEDULE_BASE_URL, MIN, MAX, UNDEFINED);
         }
 
         public static Map<String, String> getSubExtensions() {
@@ -733,12 +1129,13 @@ public final class FhirUrls {
       public static final String PATIENT = Extension.LABOR_MAPPING + "/patient";
       public static final String ENCOUNTER = Extension.LABOR_MAPPING + "/encounter";
       public static final String CREATE_PROFILE = Extension.LABOR_MAPPING + "/createProfile";
+      public static final String INCREMENT_LABORMETHOD_VERSION = Extension.LABOR_MAPPING + "/incrementProfileVersion";
 
       private LaborMapping() { /* hide constructor */}
 
       @Nonnull
       public static List<String> getAllDomains() {
-        return asList(LABOR_MAPPING_TYPE, RELATED_REFERENCE, PATIENT, ENCOUNTER, CREATE_PROFILE);
+        return asList(LABOR_MAPPING_TYPE, RELATED_REFERENCE, PATIENT, ENCOUNTER, CREATE_PROFILE, INCREMENT_LABORMETHOD_VERSION);
       }
     }
 
@@ -746,6 +1143,8 @@ public final class FhirUrls {
       public static final String PATH = SAMPLE_LOCATION + "/path";
       public static final String SCHEMA = SAMPLE_LOCATION + "/schema";
       public static final String FILL_COUNT = SAMPLE_LOCATION + "/fillCount";
+      public static final String TEMPERATURE = SAMPLE_LOCATION + "/temperature";
+      public static final String RELOCATIONDATE = SAMPLE_LOCATION + "/relocationDate";
 
       private SampleLocation() { /* hide constructor */}
 
@@ -756,6 +1155,9 @@ public final class FhirUrls {
         domains.add(SCHEMA);
         domains.add(FILL_COUNT);
         domains.addAll(Schema.getAllDomains());
+        domains.add(TEMPERATURE);
+        domains.addAll(Temperature.getAllDomains());
+        domains.add(RELOCATIONDATE);
         return domains;
       }
 
@@ -780,6 +1182,18 @@ public final class FhirUrls {
         }
       }
 
+      public static final class Temperature {
+        public static final String VALUE = TEMPERATURE + "/value";
+        public static final String INHERIT_TEMPERATURE = TEMPERATURE + "/inheritToChildren";
+
+        private Temperature() {
+        }
+
+        @Nonnull
+        public static List<String> getAllDomains() {
+          return asList(VALUE, INHERIT_TEMPERATURE);
+        }
+      }
     }
 
     /**
@@ -802,31 +1216,57 @@ public final class FhirUrls {
     public static final class Catalogs {
       private static final String BASE_URL = Extension.BASE_URL + "/catalogs";
       public static final String CATALOG_USAGE = Catalogs.BASE_URL + "/usage";
-      public static final String MASTER_DATA_CATALOG_TYPE = Catalogs.BASE_URL+ "/masterDataCatalogType";
+      public static final String MASTER_DATA_CATALOG_TYPE = Catalogs.BASE_URL + "/masterDataCatalogType";
 
       private Catalogs() {
       }
 
       @Nonnull
       public static List<String> getAllDomains() {
-        return Arrays.asList(CATALOG_USAGE, MASTER_DATA_CATALOG_TYPE);
+        return asList(CATALOG_USAGE, MASTER_DATA_CATALOG_TYPE);
       }
     }
 
+    public static final class StudyMember {
+      private static final String BASE_URL = Extension.BASE_URL + "/studyMember";
+      public static final String STUDY_CENTER = BASE_URL + "/studyCenter";
+
+      private StudyMember() {
+      }
+
+      @Nonnull
+      public static List<String> getAllDomains() {
+        return singletonList(STUDY_CENTER);
+      }
+    }
+
+    public static class FhirDefaults {
+
+      /**
+       * see <a href="https://www.hl7.org/fhir/R4/extension-data-absent-reason-definitions.html">Extension: Data Absent Reason</a>
+       */
+      public static final String DATA_ABSENT_REASON = "http://hl7.org/fhir/StructureDefinition/data-absent-reason";
+
+      private FhirDefaults() {}
+
+      @Nonnull
+      public static List<String> getAllDomains() {
+        return singletonList(DATA_ABSENT_REASON);
+      }
+    }
   }
 
   public static final class System {
     private static final String BASE_URL = CXX_BASE_URL + "/system";
     private static final String BASE_URL_VALUESET = CXX_BASE_URL + "/valueSet";
 
-
     public static final String CXX_ENTITY = BASE_URL + "/cxxEntity";
 
-    public static final String MED_DEPARTMENT = BASE_URL + "/medDepartment";
     public static final String STAY_TYPE = BASE_URL + "/stayType";
     public static final String LABOR_MAPPING = BASE_URL + "/laborMapping";
     public static final String LOCATION_TYPE = BASE_URL + "/locationType";
     public static final String ORGANIZATION_UNIT = BASE_URL + "/organizationUnit";
+    public static final String INSURANCE_COMPANY = BASE_URL + "/insuranceCompany";
 
     // special master data catalog entry values
     public static final String STRING = CXX_BASE_URL + "/string";
@@ -839,9 +1279,15 @@ public final class FhirUrls {
 
     public static class FhirDefaults {
       public static final String ICD10 = "http://hl7.org/fhir/sid/icd-10";
+      public static final String DATA_ABSENT_REASON = "http://terminology.hl7.org/CodeSystem/data-absent-reason";
 
       private FhirDefaults() {
       }
+    }
+
+    public static class MedDepartment {
+      public static final String BASE_URL_VALUESET = System.BASE_URL_VALUESET + "/medDepartment";
+      public static final String BASE_URL = System.BASE_URL + "/medDepartment";
     }
 
     public static class Tumor {
@@ -890,7 +1336,6 @@ public final class FhirUrls {
       public static final String OTHERCLASSIFICATION_ID = BASE_URL + "/otherClassificationId";
       public static final String CLASSIFICATION_NAME = BASE_URL + "/classificationName";
 
-
       private OtherClassification() {
       }
     }
@@ -937,6 +1382,72 @@ public final class FhirUrls {
       public static final String COUNCIL_PATIENT_ID = BASE_URL + "/councilPatientId";
 
       private CouncilPatient() {
+      }
+    }
+
+    public static class FollowDisease {
+      public static final String BASE_URL = System.BASE_URL + "/followDisease";
+      public static final String FOLLOWDISEASE_ID = BASE_URL + "/followDiseaseId";
+      public static final String CXX_ID = BASE_URL + "/cxxId";
+
+      private FollowDisease() {
+      }
+    }
+
+    public static class Surgery {
+      public static final String BASE_URL = System.BASE_URL + "/surgery";
+      public static final String SURGERY_ID = BASE_URL + "/surgeryId";
+      public static final String XML_ID = BASE_URL + "/xmlId";
+      public static final String CXX_SURGERY_ID = BASE_URL + "/cxxSurgeryId";
+
+      private Surgery() {
+      }
+    }
+
+    public static class RadiationTherapy {
+      public static final String BASE_URL = System.BASE_URL + "/radiationTherapy";
+      public static final String RADIATIONTHERAPY_ID = BASE_URL + "/radiationTherapyId";
+      public static final String XML_ID = BASE_URL + "/xmlId";
+      public static final String CXX_RADIATIONTHERAPY_ID = BASE_URL + "/cxxRadiationTherapyId";
+
+      private RadiationTherapy() {
+      }
+    }
+
+    public static class SystemTherapy {
+      public static final String BASE_URL = System.BASE_URL + "/systemTherapy";
+      public static final String SYSTEMTHERAPY_ID = BASE_URL + "/systemTherapyId";
+      public static final String XML_ID = BASE_URL + "/xmlId";
+      public static final String CXX_SYSTEMTHERAPY_ID = BASE_URL + "/cxxSystemTherapyId";
+
+      private SystemTherapy() {
+      }
+    }
+
+    public static class RadiationComponent {
+      public static final String BASE_URL = System.BASE_URL + "/radiationComponent";
+      public static final String RADIATIONCOMPONENT_ID = BASE_URL + "/radiationComponentId";
+      public static final String CXX_RADIATIONCOMPONENT_ID = BASE_URL + "/cxxRadiationComponentId";
+
+      private RadiationComponent() {
+      }
+    }
+
+    public static class SurgeryComponent {
+      public static final String BASE_URL = System.BASE_URL + "/surgeryComponent";
+      public static final String SURGERYCOMPONENT_ID = BASE_URL + "/surgeryComponentId";
+      public static final String XML_ID = BASE_URL + "/xmlId";
+      public static final String CXX_SURGERYCOMPONENT_ID = BASE_URL + "/cxxSurgeryComponentId";
+
+      private SurgeryComponent() {
+      }
+    }
+
+    public static class Complications {
+      public static final String BASE_URL = System.BASE_URL + "/complications";
+      public static final String XML_ID = BASE_URL + "/xmlId";
+
+      private Complications() {
       }
     }
 
@@ -1565,9 +2076,20 @@ public final class FhirUrls {
     }
 
     public static class Episode {
-      public static final String CXX_EPISODE_ID = System.BASE_URL + "/episode/centraxxEpisodeId";
+      private static String BASE_URL = System.BASE_URL + "/episode";
+      private static String BASE_URL_VALUESET = System.BASE_URL_VALUESET + "/episode";
+      public static final String CXX_EPISODE_ID = BASE_URL + "/centraxxEpisodeId";
 
       private Episode() {
+      }
+
+      public static class StayType {
+        private StayType() {
+          /*hide constructor*/
+        }
+
+        public static String BASE_URL = Episode.BASE_URL + "/stayType";
+        public static String BASE_URL_VALUESET = Episode.BASE_URL_VALUESET + "/stayType";
       }
     }
 
@@ -1649,19 +2171,24 @@ public final class FhirUrls {
     }
 
     public static final class RadiationTarget {
-      public static final String RADIATION_COMPONENT_ID = BASE_URL + "/radiationComponentId";
       public static final String RADIATION_TARGET_ID = BASE_URL + "/radiationTargetId";
       public static final String CXX_RADIATION_TARGET_ID = BASE_URL + "/cXXRadiationTargetId";
       public static final String CODE = BASE_URL + "/code";
 
-      private RadiationTarget() {}
+      private RadiationTarget() {
+      }
+    }
+
+    public static final class AdverseEffects {
+      public static final String ADVERSE_EFFECT_ID = BASE_URL + "/adverseEffectId";
+
+      private AdverseEffects() {
+      }
     }
 
     public static final class Patient {
       private static final String BASE_URL = System.BASE_URL + "/patient";
       private static final String BASE_URL_VALUESET = System.BASE_URL_VALUESET + "/patient";
-
-      public static final String ETHNICITY = BASE_URL + "/ethnicity";
 
       public static final class Ethnicity {
         public static final String BASE_URL = Patient.BASE_URL + "/ethnicity";
@@ -1721,13 +2248,31 @@ public final class FhirUrls {
         private Gender() {
         }
       }
+
+      public static final class PatientInsurance {
+        private static final String BASE_URL = Patient.BASE_URL + "/patientInsurance";
+        public static final String RELATIONSHIP = BASE_URL + "/relationship";
+        public static final String COVERAGE_TYPE = BASE_URL + "/coverageType";
+
+        private PatientInsurance() {
+        }
+      }
     }
 
     public static final class Study {
-      private static final String BASE_URL = System.BASE_URL + "/study";
-      private static final String BASE_URL_VALUESET = System.BASE_URL_VALUESET + "/study";
+      public static final String BASE_URL = System.BASE_URL + "/study";
+      public static final String BASE_URL_VALUESET = System.BASE_URL_VALUESET + "/study";
 
       private Study() {/* hide constructor */}
+
+      public static class StudyStatus {
+
+        public static final String BASE_URL = Study.BASE_URL + "/status";
+        public static final String BASE_URL_VALUESET = Study.BASE_URL_VALUESET + "/status";
+
+        private StudyStatus() {
+        }
+      }
 
       public static class StudyVisitTemplate {
 
@@ -1747,8 +2292,17 @@ public final class FhirUrls {
         }
       }
 
+      public static class StudyArmType {
+
+        public static final String BASE_URL = Study.BASE_URL + "/studyArmType";
+        public static final String BASE_URL_VALUESET = Study.BASE_URL_VALUESET + "/studyArmType";
+
+        private StudyArmType() {
+        }
+      }
+
       public static class Schedule {
-        private static final String BASE_URL = System.Study.BASE_URL + "/schedule";
+        private static final String BASE_URL = Study.BASE_URL + "/schedule";
         public static final String MINUNIT = BASE_URL + "/minUnit";
         public static final String MAXUNIT = BASE_URL + "/maxUnit";
         public static final String REFPOINT = BASE_URL + "/refPoint";
@@ -1936,7 +2490,6 @@ public final class FhirUrls {
 
         private AbnormalFlag() {/* hide constructor */}
       }
-
     }
 
     public static final class Medication {
@@ -1989,13 +2542,6 @@ public final class FhirUrls {
         private StayType() {/* hide constructor */}
       }
 
-      public static final class MedDepartment {
-        public static final String BASE_URL = Calendar.BASE_URL + "/medDepartment";
-        public static final String BASE_URL_VALUESET = Calendar.BASE_URL_VALUESET + "/medDepartment";
-
-        private MedDepartment() {/*hide constructor*/}
-      }
-
       public static final class AppointmentLocation {
         public static final String BASE_URL = Calendar.BASE_URL + "/appointmentLocation";
         public static final String BASE_URL_VALUESET = Calendar.BASE_URL_VALUESET + "/appointmentLocation";
@@ -2024,7 +2570,6 @@ public final class FhirUrls {
       }
 
       private Hotline() {/* hide constructor */}
-
     }
 
     public static final class Task {
@@ -2055,7 +2600,6 @@ public final class FhirUrls {
       }
 
       private Task() {/* hide constructor */}
-
     }
 
     public static final class LaborValue {
@@ -2321,8 +2865,16 @@ public final class FhirUrls {
       private AttendingDoctor() {
       }
     }
+
+    public static final class StudyMember {
+      private static final String BASE_URL = System.BASE_URL + "/studyMember";
+
+      public static final String INTERNAL_STUDYMEMBERID = BASE_URL + "/internalStudyMemberId";
+
+      private StudyMember() {
+      }
+    }
   }
 
   private FhirUrls() {/* hide constructor */}
-
 }

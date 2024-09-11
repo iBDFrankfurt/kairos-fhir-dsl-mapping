@@ -4,92 +4,62 @@
     {
       "selectFromCxxEntity": "ORGANIZATION_UNIT",
       "transformByTemplate": "organization",
-      "exportToFhirResource": "Organization"
+      "exportToFhirResource": "Organization",
+      "exportDeleteEnable": "true"
     },
     {
       "selectFromCxxEntity": "PATIENT_MASTER",
       "transformByTemplate": "patient",
-      "exportToFhirResource": "Patient"
-    },
-    {
-      "selectFromCxxEntity": "ATTENDING_DOCTOR",
-      "transformByTemplate": "practitioner",
-      "exportToFhirResource": "Practitioner"
+      "exportToFhirResource": "Patient",
+      "exportDeleteEnable": "true"
     },
     {
       "selectFromCxxEntity": "EPISODE",
       "transformByTemplate": "encounter",
-      "exportToFhirResource": "Encounter"
+      "exportToFhirResource": "Encounter",
+      "exportDeleteEnable": "true"
     },
     {
       "selectFromCxxEntity": "LABOR_MAPPING",
-      "transformByTemplate": "observation",
-      "exportToFhirResource": "Observation"
+      "transformByTemplate": "freeTextFilteredObservation",
+      "exportToFhirResource": "Observation",
+      "exportDeleteEnable": "true"
+    },
+    {
+      "selectFromCxxEntity": "LABOR_MAPPING",
+      "transformByTemplate": "freeTextDiagnosticReport",
+      "exportToFhirResource": "DiagnosticReport",
+      "exportDeleteEnable": "true"
     },
     {
       "selectFromCxxEntity": "DIAGNOSIS",
       "transformByTemplate": "condition",
-      "exportToFhirResource": "Condition"
+      "exportToFhirResource": "Condition",
+      "exportDeleteEnable": "true"
     },
     {
       "selectFromCxxEntity": "MED_PROCEDURE",
       "transformByTemplate": "procedure",
-      "exportToFhirResource": "Procedure"
-    },
-    {
-      "selectFromCxxEntity": "HISTOLOGY",
-      "transformByTemplate": "histology",
-      "exportToFhirResource": "Observation"
-    },
-    {
-      "selectFromCxxEntity": "METASTASIS",
-      "transformByTemplate": "metastasis",
-      "exportToFhirResource": "Observation"
-    },
-    {
-      "selectFromCxxEntity": "TNM",
-      "transformByTemplate": "tnmSimple",
-      "exportToFhirResource": "Observation"
-    },
-    {
-      "selectFromCxxEntity": "ANN_ARBOR",
-      "transformByTemplate": "annArbor",
-      "exportToFhirResource": "Observation"
-    },
-    {
-      "selectFromCxxEntity": "OTHER_CLASSIFICATION",
-      "transformByTemplate": "otherClassification",
-      "exportToFhirResource": "Observation"
-    },
-    {
-      "selectFromCxxEntity": "PROGRESS",
-      "transformByTemplate": "progress",
-      "exportToFhirResource": "ClinicalImpression"
-    },
-    {
-      "selectFromCxxEntity": "PATIENT_TRANSFER",
-      "transformByTemplate": "location",
-      "exportToFhirResource": "Location"
-    },
-    {
-      "selectFromCxxEntity": "CALENDAR_EVENT",
-      "transformByTemplate": "appointment",
-      "exportToFhirResource": "Appointment"
+      "exportToFhirResource": "Procedure",
+      "exportDeleteEnable": "true"
     },
     {
       "selectFromCxxEntity": "MEDICATION",
       "transformByTemplate": "medicationRequest",
-      "exportToFhirResource": "MedicationRequest"
+      "exportToFhirResource": "MedicationRequest",
+      "exportDeleteEnable": "true"
     },
     {
       "selectFromCxxEntity": "MEDICATION",
       "transformByTemplate": "medicationAdministration",
-      "exportToFhirResource": "MedicationAdministration"
+      "exportToFhirResource": "MedicationAdministration",
+      "exportDeleteEnable": "true"
     },
     {
-      "selectFromCxxEntity": "LABOR_MAPPING",
-      "transformByTemplate": "histoReport",
-      "exportToFhirResource": "DiagnosticReport"
+      "selectFromCxxEntity": "SAMPLE",
+      "transformByTemplate": "specimen",
+      "exportToFhirResource": "Specimen",
+      "exportDeleteEnable": "true"
     }
   ]
 }

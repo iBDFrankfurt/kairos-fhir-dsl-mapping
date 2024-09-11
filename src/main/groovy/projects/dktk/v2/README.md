@@ -12,7 +12,22 @@ DKTK Oncology Mappings*
 
 # Changelog
 
-## 2028-11-28
+##
+
+* ecog export added
+* weitereKlassifikation export added
+
+## 2024-03-14
+
+* Specimen sampleType mapping extended for Mainz requirements (CENTRAXX-19010)
+
+## 2024-02-29
+
+* Reference to grading in histology hasMember added
+* Export order changed to make sure that grading is exported before histology
+* Unnecessary logging in specimen removed
+
+## 2023-11-28
 
 * genetischeVariante: condition reference removed
 

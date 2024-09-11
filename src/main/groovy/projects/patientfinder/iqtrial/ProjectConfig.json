@@ -18,12 +18,12 @@
   "description": "This configuration specifies for each FHIR custom export project all project-specific necessary properties. The configuration can not be changed during runtime. Restart CentraXX after each change!!!",
   "patientFilterType": {
     "description": "Filters the patients and its patient data by one of the following filter types with the following filter value: PATIENTSTUDY: Patient belongs to a specified study in the study register. The study has to be specified by \u0027{studyCode}${studyProfileCode}\u0027, e.g. COVID19$BASIC. CONSENTTYPE: Patient has a valid consent of the specified consent type (code). ORGUNIT: Patient has the specific organizational unit (code). FLEXIFLAGDEF: Patient has an universal attribute of the specified universal attribute type (code). IDTYPE: Patient has an ID of the specified ID type (code).",
-    "value": "IDTYPE"
+    "value": "ORGUNIT"
   },
   "patientFilterValues": {
     "description": "If the patient matches one of this filter values, it is transformed and exported.",
     "value": [
-      "NHS", "COSD", "SACT"
+      "IQTrial"
     ]
   },
   "pageSize": {
@@ -39,7 +39,7 @@
     "value": true
   },
   "exportFolder": {
-    "value": "C:/Users/u1089116/centraxx-home/fhir-custom-export/patientfinder"
+    "value": "/export/fhir-custom-export/patientfinder"
   },
   "uploadToUrl": {
     "description": "If true, the scheduler will export to the specified  uploadUrl REST endpoint.",

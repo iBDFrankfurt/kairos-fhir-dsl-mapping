@@ -11,8 +11,9 @@ import static de.kairos.fhir.centraxx.metamodel.RootEntities.diagnosis
 
 /**
  * Represented by a CXX Consent
- * @author Mike Wähnert
+ * @author Franzy Hohnstaedter, Mike Wähnert
  * @since KAIROS-FHIR-DSL.v.1.16.0, CXX.v.2022.2.0
+ * @since v.3.18.3.19, 3.18.4, 2023.6.2, 2024.1.0 CXX can import the data absence reason extension to represent the UNKNOWN precision date
  * HINT: binary file attachments are not needed and not supported yet.
  */
 consent {
@@ -38,6 +39,11 @@ consent {
     return // no export
   }
 
+  final def validFrom = context.source[consent().validFrom().date()]
+  if (validFrom == null) {
+    return // no export with empty or unknown date
+  }
+
   id = "Consent/Consent-" + context.source[consent().id()]
 
   final def patIdContainer = context.source[diagnosis().patientContainer().idContainer()]?.find {
@@ -58,13 +64,21 @@ consent {
     }
   }
 
-  final def validFrom = context.source[consent().validFrom().date()]
   final def validUntil = context.source[consent().validUntil().date()]
 
   provision {
     period {
       start = validFrom
-      end = validUntil
+      if ("UNKNOWN" == context.source[consent().validUntil().precision()]) {
+        end {
+          extension {
+            url = FhirUrls.Extension.FhirDefaults.DATA_ABSENT_REASON
+            valueCode = "unknown"
+          }
+        }
+      } else {
+        end = validUntil
+      }
     }
 
     purpose {
@@ -108,7 +122,14 @@ consent {
     verification {
       verified = true
       verificationDate {
-        date = context.source[consent().signedOn().date()]
+        if ("UNKNOWN" == context.source[consent().signedOn().precision()]) {
+          extension {
+            url = FhirUrls.Extension.FhirDefaults.DATA_ABSENT_REASON
+            valueCode = "unknown"
+          }
+        } else {
+          date = context.source[consent().signedOn().date()]
+        }
       }
     }
   }
@@ -127,7 +148,7 @@ consent {
   }
 }
 
-static String getStatus(final boolean isDeclined, final boolean isCompleteRevoked, final String validFromDate) {
+static String getStatus(final boolean isDeclined, final boolean isCompleteRevoked, final String validUntilDate) {
   if (isDeclined) {
     return "rejected"
   }
@@ -136,11 +157,11 @@ static String getStatus(final boolean isDeclined, final boolean isCompleteRevoke
     return "inactive"
   }
 
-  if (!validFromDate) {
+  if (!validUntilDate) {
     return "active"
   }
 
-  final Date fromDate = new SimpleDateFormat("yyyy-MM-dd").parse(validFromDate.substring(0, 10))
+  final Date fromDate = new SimpleDateFormat("yyyy-MM-dd").parse(validUntilDate.substring(0, 10))
   final Date currDate = new Date()
   final int res = currDate <=> (fromDate)
   return res == 1 ? "inactive" : "active"
